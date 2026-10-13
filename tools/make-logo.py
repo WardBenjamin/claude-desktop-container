@@ -22,9 +22,12 @@ CORNER = 0.22 * S
 CX = CY = 0.50 * S
 R_IN  = 0.050 * S          # rays start near the center
 R_OUT = 0.400 * S          # and reach here
-RAYS  = 11                 # odd count, distinct from any brand mark
+RAYS  = 12                 # even, so petals come in opposite pairs
 STEP  = 2 * math.pi / RAYS
-HALF  = 0.52 * STEP        # max angular half-width of a ray (at its waist)
+HALF  = 0.42 * STEP        # base angular half-width of a ray (at its waist)
+# per-pair width multipliers: opposite petals (k and k+6) share one, giving a
+# random-looking but balanced variation. 6 values for the 6 pairs.
+WIDTHS = (1.22, 0.74, 1.04, 0.86, 1.14, 0.80)
 WIGGLE_AMP  = 0.16 * STEP  # sideways wave amplitude
 WIGGLE_FREQ = 2.4          # waves along the ray's length
 CORE_R = 0.072 * S         # darker central dot
@@ -58,12 +61,13 @@ def sample(x, y):
         return TILE
     phi = math.atan2(dy, dx)
     t = (r - R_IN) / (R_OUT - R_IN)
-    w = HALF * spindle(t)
-    if w <= 0:
+    base = HALF * spindle(t)
+    if base <= 0:
         return TILE
     # nearest ray and its neighbours (wiggle can push the centerline over)
     k0 = round(phi / STEP)
     for k in (k0 - 1, k0, k0 + 1):
+        w = base * WIDTHS[k % (RAYS // 2)]          # opposite petals share a width
         center = k * STEP + WIGGLE_AMP * math.sin(WIGGLE_FREQ * math.pi * t)
         if abs(angdiff(phi, center)) <= w:
             return RAY
