@@ -9,8 +9,22 @@ APP="/Applications/$NAME.app"
 DMG=https://xpra.org/dists/MacOS/arm64/Xpra-Light-arm64-6.5.4-r2.dmg   # arm64 only; matches the server's 6.5.4
 
 tmp=$(mktemp -d)
-curl -fLo "$tmp/xpra.dmg" "$DMG"
-hdiutil attach "$tmp/xpra.dmg" -nobrowse -readonly -quiet -mountpoint "$tmp/mnt"
+
+# cache the xpra client dmg so repeated builds do not re-download 65 MB.
+# delete the cached file (or the whole .cache/) to force a fresh download.
+CACHE="$REPO/.cache"; mkdir -p "$CACHE"
+DMG_FILE="$CACHE/$(basename "$DMG")"
+mount_dmg() { hdiutil attach "$1" -nobrowse -readonly -quiet -mountpoint "$tmp/mnt"; }
+if [ ! -f "$DMG_FILE" ]; then
+  echo "downloading $(basename "$DMG") ..."
+  curl -fL "$DMG" -o "$DMG_FILE.part" && mv "$DMG_FILE.part" "$DMG_FILE"
+fi
+if ! mount_dmg "$DMG_FILE"; then            # cached copy is corrupt/partial: re-fetch once
+  echo "cached dmg did not mount; re-downloading ..."
+  rm -f "$DMG_FILE"
+  curl -fL "$DMG" -o "$DMG_FILE.part" && mv "$DMG_FILE.part" "$DMG_FILE"
+  mount_dmg "$DMG_FILE"
+fi
 rm -rf "$APP"
 cp -R "$tmp/mnt/Xpra-Light.app" "$APP"          # Xpra.app in the dmg is an empty template, ignore it
 hdiutil detach "$tmp/mnt" -quiet
