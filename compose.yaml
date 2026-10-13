@@ -1,0 +1,12 @@
+name: claude-work
+services:
+  claude:
+    build: .
+    container_name: claude-work
+    hostname: claude-work
+    shm_size: 1g                      # Chromium needs more than Docker's 64 MB /dev/shm
+    ports:
+      - "127.0.0.1:14500:14500"
+    volumes:
+      - ~/VM_Workspace:/home/dev      # the whole home: sign-in, keyring, ~/.claude, MCP config, projects
+    restart: unless-stopped           # quitting the app restarts it; `docker compose stop` to stop
