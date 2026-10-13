@@ -1,6 +1,8 @@
-<img src="assets/claude-black.png" width="112" align="left" alt="Claude Black logo">
+<p align="center">
+  <img src="assets/claude-black.png" width="84" alt="Claude Black logo">
+</p>
 
-# Claude Black
+<h1 align="center">Claude Black</h1>
 
 A completely isolated second instance of **Claude Desktop** on one Mac. The Linux
 beta of Claude Desktop runs in a Docker container under [OrbStack](https://orbstack.dev)
@@ -8,8 +10,6 @@ and is displayed on macOS through [xpra](https://xpra.org), launched by a
 re-badged `/Applications/Claude Black.app`. It runs with its own home, keyring,
 and MCP configuration, fully isolated from anything else on the machine, and gives
 you the graphical Desktop frontend in that sandbox rather than only the CLI.
-
-<br clear="left">
 
 ![Claude Black running on macOS](assets/screenshot.png)
 
