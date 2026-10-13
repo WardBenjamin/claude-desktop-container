@@ -24,10 +24,10 @@ R_IN  = 0.050 * S          # rays start near the center
 R_OUT = 0.400 * S          # and reach here
 RAYS  = 12                 # even, so petals come in opposite pairs
 STEP  = 2 * math.pi / RAYS
-HALF  = 0.42 * STEP        # base angular half-width of a ray (at its waist)
+HALF  = 0.34 * STEP        # base angular half-width of a ray (at its waist)
 # per-pair width multipliers: opposite petals (k and k+6) share one, giving a
 # random-looking but balanced variation. 6 values for the 6 pairs.
-WIDTHS = (1.22, 0.74, 1.04, 0.86, 1.14, 0.80)
+WIDTHS = (1.50, 1.08, 0.58, 0.80, 1.32, 0.70)   # irregular order (runs, not alternating) + wide spread
 WIGGLE_AMP  = 0.16 * STEP  # sideways wave amplitude
 WIGGLE_FREQ = 2.4          # waves along the ray's length
 CORE_R = 0.072 * S         # darker central dot
